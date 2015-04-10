@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Free Software | Dan Keller]]></title>
+  <link href="http://dankeller.github.io/blog/categories/free-software/atom.xml" rel="self"/>
+  <link href="http://dankeller.github.io/"/>
+  <updated>2015-04-09T19:34:00-05:00</updated>
+  <id>http://dankeller.github.io/</id>
+  <author>
+    <name><![CDATA[Dan Keller]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Using Ubuntu 14.04 as a Backend for Munki]]></title>
+    <link href="http://dankeller.github.io/2014/10/13/using-ubuntu-14-dot-04-as-a-backend-for-munki/"/>
+    <updated>2014-10-13T10:43:31-05:00</updated>
+    <id>http://dankeller.github.io/2014/10/13/using-ubuntu-14-dot-04-as-a-backend-for-munki</id>
+    <content type="html"><![CDATA[<p><a href="http://clburlison.com">Clayton Burlison</a> posted <a href="http://clburlison.com/blog/2014/10/06/munkirepo-guide-part-1/">a handy primer</a> on setting up your <a href="https://github.com/munki/munki">Munki</a> repo on <a href="http://releases.ubuntu.com/14.04/">Ubuntu 14.04 LTS</a> with <a href="http://nginx.org/">nginx</a> and <a href="https://github.com/wollardj/mandrill">Mandrill</a>. This is definitely on my to-do list.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Mactracker]]></title>
+    <link href="http://dankeller.github.io/2014/10/03/mactracker/"/>
+    <updated>2014-10-03T12:04:38-05:00</updated>
+    <id>http://dankeller.github.io/2014/10/03/mactracker</id>
+    <content type="html"><![CDATA[<p><a href="http://mactracker.ca">I love it</a>. That is all.</p>
+]]></content>
+  </entry>
+  
+</feed>

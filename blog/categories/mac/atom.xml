@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Mac | Dan Keller]]></title>
+  <link href="http://dankeller.github.io/blog/categories/mac/atom.xml" rel="self"/>
+  <link href="http://dankeller.github.io/"/>
+  <updated>2015-04-09T19:34:00-05:00</updated>
+  <id>http://dankeller.github.io/</id>
+  <author>
+    <name><![CDATA[Dan Keller]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Using Ubuntu 14.04 as a Backend for Munki]]></title>
+    <link href="http://dankeller.github.io/2014/10/13/using-ubuntu-14-dot-04-as-a-backend-for-munki/"/>
+    <updated>2014-10-13T10:43:31-05:00</updated>
+    <id>http://dankeller.github.io/2014/10/13/using-ubuntu-14-dot-04-as-a-backend-for-munki</id>
+    <content type="html"><![CDATA[<p><a href="http://clburlison.com">Clayton Burlison</a> posted <a href="http://clburlison.com/blog/2014/10/06/munkirepo-guide-part-1/">a handy primer</a> on setting up your <a href="https://github.com/munki/munki">Munki</a> repo on <a href="http://releases.ubuntu.com/14.04/">Ubuntu 14.04 LTS</a> with <a href="http://nginx.org/">nginx</a> and <a href="https://github.com/wollardj/mandrill">Mandrill</a>. This is definitely on my to-do list.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Mactracker]]></title>
+    <link href="http://dankeller.github.io/2014/10/03/mactracker/"/>
+    <updated>2014-10-03T12:04:38-05:00</updated>
+    <id>http://dankeller.github.io/2014/10/03/mactracker</id>
+    <content type="html"><![CDATA[<p><a href="http://mactracker.ca">I love it</a>. That is all.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Cleaning Up /Users]]></title>
+    <link href="http://dankeller.github.io/2014/10/02/cleaning-up-users/"/>
+    <updated>2014-10-02T09:08:13-05:00</updated>
+    <id>http://dankeller.github.io/2014/10/02/cleaning-up-users</id>
+    <content type="html"><![CDATA[<h3>The Problem</h3>
+
+<p>Working in a school, I often need to clean up the old user folders in /Users on our lab machines. We don&rsquo;t &ldquo;freeze&rdquo; our labs for various reasons, but mostly so the computer behaves as the user expects and they don&rsquo;t lose the project they were working on simply because they saved it to the computer instead of their flash drive.
+Over time, the computer accumulates a lot of home folders!</p>
+
+<p>I sure don&rsquo;t want to delete them manually.</p>
+
+<!-- more -->
+
+
+<h3>A Solution</h3>
+
+<p>A (dangerous) solution is to script the deletion of the folders. I say it is dangerous because any time you are deleting files with a script, you run the risk of lost data. You have been warned.</p>
+
+<p>I needed the script to only delete folders that had not been accessed in a while. The idea is to delete folders from users who had not logged in at all the current trimester. 90 days should do.</p>
+
+<p>I also needed to keep some local users, an admin account, a special user set up for online testing and a student guest account that gets reset after each reboot.</p>
+
+<p>I used an array to list the folders I don&rsquo;t want to touch.</p>
+
+<p><code>bash
+KEEP=("/Users/Shared" "/Users/support" "/Users/student" "/Users/testing")
+</code></p>
+
+<p>I used <code>find</code> with a simple date check on the folder to determine if it should be deleted. Each time a user logs in, it updates files in the folder, therefore updating it&rsquo;s timestamp. Great!</p>
+
+<p><code>bash
+USERLIST=`/usr/bin/find /Users -type d -maxdepth 1 -mindepth 1 -not -name "." -mtime +$AGE`
+</code></p>
+
+<p>I am maintaining my script on <a href="https://github.com/dankeller">github</a>, so feel free to grab it. Again, <strong>THIS WILL DELETE DATA AND YOU HAVE BEEN WARNED</strong>.</p>
+
+<p>Run it remotely, create a <a href="https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html">LaunchAgent</a> and/or use Nate Walck&rsquo;s neat little <a href="https://github.com/natewalck/Scripts/blob/master/scriptRunner.py">scriptRunner.py</a>.</p>
+
+<p>Happy cleaning!</p>
+
+<p>``` bash delete_inactive_users.sh <a href="https://github.com/dankeller/macscripts">https://github.com/dankeller/macscripts</a></p>
+
+<h1>!/bin/bash</h1>
+
+<h1>Modified 2014-10-02</h1>
+
+<h1>delete_inactive_users.sh</h1>
+
+<h1>Maintained at <a href="https://github.com/dankeller/macscripts">https://github.com/dankeller/macscripts</a></h1>
+
+<h1>by Dan Keller</h1>
+
+<p>#</p>
+
+<h1>MIT License</h1>
+
+<p>#</p>
+
+<h1>======================================</h1>
+
+<p>#</p>
+
+<h1>Script to delete local user data that has not been accessed in a given time</h1>
+
+<h1>period.</h1>
+
+<p>#</p>
+
+<h1>This script scans the /Users folder for the date last updated (logged in)</h1>
+
+<h1>and deletes the folder as well as the corresponding user account if it has been</h1>
+
+<h1>longer than the tiome specified. You can specify user folders to keep as well.</h1>
+
+<p>#</p>
+
+<h1>User data not stored in /Users is not effected.</h1>
+
+<p>#</p>
+
+<h1>Helpful for maintaing shared/lab Macs connected to an AD/OD/LDAP server.</h1>
+
+<p>#</p>
+
+<h1>======================================</h1>
+
+<h1>&mdash;&mdash;Variables&mdash;&mdash;</h1>
+
+<p>AGE=90  # Delete /User/ folders inactive longer than this many days</p>
+
+<p>KEEP=(&ldquo;/Users/Shared&rdquo; &ldquo;/Users/support&rdquo; &ldquo;/Users/student&rdquo; &ldquo;/Users/testing&rdquo;) # User folders you would like to bypass. Typically local users or admin accounts.</p>
+
+<h1>&mdash;End variables&mdash;</h1>
+
+<h3>Delete Inactive Users</h3>
+
+<p>if [[ $UID -ne 0 ]]; then echo &ldquo;$0 must be run as root.&rdquo; &amp;&amp; exit 1; fi</p>
+
+<p>USERLIST=<code>/usr/bin/find /Users -type d -maxdepth 1 -mindepth 1 -not -name "." -mtime +$AGE</code></p>
+
+<p>echo &ldquo;Performing inactive user cleanup&rdquo;</p>
+
+<p>for a in $USERLIST; do</p>
+
+<pre><code>if ! [[ ${KEEP[*]} =~ "$a" ]]; then
+    echo "Deleting inactive (over $AGE days) account and home directory:" $a
+
+    # delete user
+    /usr/bin/dscl . delete $a &gt; /dev/null 2&gt;&amp;1
+
+    # delete home folder
+    /bin/rm -r $a
+    continue
+else
+    echo "SKIPPING" $a
+fi
+</code></pre>
+
+<p>done</p>
+
+<p>echo &ldquo;Cleanup complete&rdquo;
+exit 0
+```</p>
+]]></content>
+  </entry>
+  
+</feed>

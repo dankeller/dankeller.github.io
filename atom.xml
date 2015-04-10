@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Dan Keller]]></title>
+  <link href="http://dankeller.github.io/atom.xml" rel="self"/>
+  <link href="http://dankeller.github.io/"/>
+  <updated>2015-04-09T19:34:00-05:00</updated>
+  <id>http://dankeller.github.io/</id>
+  <author>
+    <name><![CDATA[Dan Keller]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[AutoPkg at Twin Cities Mac Admins]]></title>
+    <link href="http://dankeller.github.io/2015/03/23/autopkg-at-mspmacadmns/"/>
+    <updated>2015-03-23T14:26:55-05:00</updated>
+    <id>http://dankeller.github.io/2015/03/23/autopkg-at-mspmacadmns</id>
+    <content type="html"><![CDATA[<p>Check out my slides from my talk at today&rsquo;s <a href="http://www.mspmacadmins.org/2015/03/meetup-march-23-2015/">Twin Cities Mac Admins meetup</a>.</p>
+
+<p><a href="https://speakerdeck.com/dankeller/autopkg-intro">https://speakerdeck.com/dankeller/autopkg-intro</a></p>
+
+<!-- more -->
+
+
+<p>Links:</p>
+
+<ul>
+<li><a href="https://github.com/autopkg/autopkg/wiki/More-resources">AutoPkg Resources</a></li>
+<li><a href="http://www.lindegroup.com/autopkgr">AutoPkgr</a></li>
+<li><a href="http://seankaiser.com/blog/2013/12/16/autopkg-change-notifications/">Sean Kaiser&rsquo;s AutoPkg change notifocation script</a></li>
+<li><a href="https://github.com/sheagcraig/JSSImporter">JSSImporter</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Using Ubuntu 14.04 as a Backend for Munki]]></title>
+    <link href="http://dankeller.github.io/2014/10/13/using-ubuntu-14-dot-04-as-a-backend-for-munki/"/>
+    <updated>2014-10-13T10:43:31-05:00</updated>
+    <id>http://dankeller.github.io/2014/10/13/using-ubuntu-14-dot-04-as-a-backend-for-munki</id>
+    <content type="html"><![CDATA[<p><a href="http://clburlison.com">Clayton Burlison</a> posted <a href="http://clburlison.com/blog/2014/10/06/munkirepo-guide-part-1/">a handy primer</a> on setting up your <a href="https://github.com/munki/munki">Munki</a> repo on <a href="http://releases.ubuntu.com/14.04/">Ubuntu 14.04 LTS</a> with <a href="http://nginx.org/">nginx</a> and <a href="https://github.com/wollardj/mandrill">Mandrill</a>. This is definitely on my to-do list.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Mactracker]]></title>
+    <link href="http://dankeller.github.io/2014/10/03/mactracker/"/>
+    <updated>2014-10-03T12:04:38-05:00</updated>
+    <id>http://dankeller.github.io/2014/10/03/mactracker</id>
+    <content type="html"><![CDATA[<p><a href="http://mactracker.ca">I love it</a>. That is all.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Cleaning Up /Users]]></title>
+    <link href="http://dankeller.github.io/2014/10/02/cleaning-up-users/"/>
+    <updated>2014-10-02T09:08:13-05:00</updated>
+    <id>http://dankeller.github.io/2014/10/02/cleaning-up-users</id>
+    <content type="html"><![CDATA[<h3>The Problem</h3>
+
+<p>Working in a school, I often need to clean up the old user folders in /Users on our lab machines. We don&rsquo;t &ldquo;freeze&rdquo; our labs for various reasons, but mostly so the computer behaves as the user expects and they don&rsquo;t lose the project they were working on simply because they saved it to the computer instead of their flash drive.
+Over time, the computer accumulates a lot of home folders!</p>
+
+<p>I sure don&rsquo;t want to delete them manually.</p>
+
+<!-- more -->
+
+
+<h3>A Solution</h3>
+
+<p>A (dangerous) solution is to script the deletion of the folders. I say it is dangerous because any time you are deleting files with a script, you run the risk of lost data. You have been warned.</p>
+
+<p>I needed the script to only delete folders that had not been accessed in a while. The idea is to delete folders from users who had not logged in at all the current trimester. 90 days should do.</p>
+
+<p>I also needed to keep some local users, an admin account, a special user set up for online testing and a student guest account that gets reset after each reboot.</p>
+
+<p>I used an array to list the folders I don&rsquo;t want to touch.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">KEEP</span><span class="o">=(</span><span class="s2">&quot;/Users/Shared&quot;</span> <span class="s2">&quot;/Users/support&quot;</span> <span class="s2">&quot;/Users/student&quot;</span> <span class="s2">&quot;/Users/testing&quot;</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I used <code>find</code> with a simple date check on the folder to determine if it should be deleted. Each time a user logs in, it updates files in the folder, therefore updating it&rsquo;s timestamp. Great!</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">USERLIST</span><span class="o">=</span><span class="sb">`</span>/usr/bin/find /Users -type d -maxdepth 1 -mindepth 1 -not -name <span class="s2">&quot;.&quot;</span> -mtime +<span class="nv">$AGE</span><span class="sb">`</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I am maintaining my script on <a href="https://github.com/dankeller">github</a>, so feel free to grab it. Again, <strong>THIS WILL DELETE DATA AND YOU HAVE BEEN WARNED</strong>.</p>
+
+<p>Run it remotely, create a <a href="https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html">LaunchAgent</a> and/or use Nate Walck&rsquo;s neat little <a href="https://github.com/natewalck/Scripts/blob/master/scriptRunner.py">scriptRunner.py</a>.</p>
+
+<p>Happy cleaning!</p>
+
+<figure class='code'><figcaption><span>delete_inactive_users.sh</span><a href='https://github.com/dankeller/macscripts'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Modified 2014-10-02</span>
+</span><span class='line'><span class="c"># delete_inactive_users.sh</span>
+</span><span class='line'><span class="c"># Maintained at https://github.com/dankeller/macscripts</span>
+</span><span class='line'><span class="c"># by Dan Keller</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># MIT License</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#======================================</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Script to delete local user data that has not been accessed in a given time</span>
+</span><span class='line'><span class="c"># period.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># This script scans the /Users folder for the date last updated (logged in)</span>
+</span><span class='line'><span class="c"># and deletes the folder as well as the corresponding user account if it has been</span>
+</span><span class='line'><span class="c"># longer than the tiome specified. You can specify user folders to keep as well.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># User data not stored in /Users is not effected.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Helpful for maintaing shared/lab Macs connected to an AD/OD/LDAP server.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#======================================</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c">#----Variables----</span>
+</span><span class='line'><span class="nv">AGE</span><span class="o">=</span>90 <span class="c"># Delete /User/ folders inactive longer than this many days</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">KEEP</span><span class="o">=(</span><span class="s2">&quot;/Users/Shared&quot;</span> <span class="s2">&quot;/Users/support&quot;</span> <span class="s2">&quot;/Users/student&quot;</span> <span class="s2">&quot;/Users/testing&quot;</span><span class="o">)</span> <span class="c"># User folders you would like to bypass. Typically local users or admin accounts.</span>
+</span><span class='line'><span class="c">#--End variables--</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c">### Delete Inactive Users ###</span>
+</span><span class='line'><span class="k">if</span> <span class="o">[[</span> <span class="nv">$UID</span> -ne 0 <span class="o">]]</span>; <span class="k">then </span><span class="nb">echo</span> <span class="s2">&quot;$0 must be run as root.&quot;</span> <span class="o">&amp;&amp;</span> <span class="nb">exit </span>1; <span class="k">fi</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">USERLIST</span><span class="o">=</span><span class="sb">`</span>/usr/bin/find /Users -type d -maxdepth 1 -mindepth 1 -not -name <span class="s2">&quot;.&quot;</span> -mtime +<span class="nv">$AGE</span><span class="sb">`</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;Performing inactive user cleanup&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for </span>a in <span class="nv">$USERLIST</span>; <span class="k">do</span>
+</span><span class='line'><span class="k">  if</span> ! <span class="o">[[</span> <span class="k">${</span><span class="nv">KEEP</span><span class="p">[*]</span><span class="k">}</span> <span class="o">=</span>~ <span class="s2">&quot;$a&quot;</span> <span class="o">]]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">      </span><span class="nb">echo</span> <span class="s2">&quot;Deleting inactive (over $AGE days) account and home directory:&quot;</span> <span class="nv">$a</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="c"># delete user</span>
+</span><span class='line'>      /usr/bin/dscl . delete <span class="nv">$a</span> &gt; /dev/null 2&gt;&amp;1
+</span><span class='line'>      
+</span><span class='line'>      <span class="c"># delete home folder</span>
+</span><span class='line'>      /bin/rm -r <span class="nv">$a</span>
+</span><span class='line'>      <span class="k">continue</span>
+</span><span class='line'><span class="k">  else</span>
+</span><span class='line'><span class="k">      </span><span class="nb">echo</span> <span class="s2">&quot;SKIPPING&quot;</span> <span class="nv">$a</span>
+</span><span class='line'>  <span class="k">fi</span>
+</span><span class='line'><span class="k">done</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;Cleanup complete&quot;</span>
+</span><span class='line'><span class="nb">exit </span>0
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+</feed>
